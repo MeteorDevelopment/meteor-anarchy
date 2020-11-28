@@ -1,6 +1,9 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-apply plugin: 'java'
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
+}
 
 group = 'minegame159'
 version = '0.1.0'
@@ -22,6 +25,8 @@ repositories {
 
 dependencies {
     compileOnly 'com.destroystokyo.paper:paper-api:1.16.4-R0.1-SNAPSHOT'
+
+    compile 'org.reflections:reflections:0.9.12'
 }
 
 processResources {
@@ -29,3 +34,9 @@ processResources {
         filter ReplaceTokens, tokens: [version: version]
     }
 }
+
+shadowJar {
+    classifier = ''
+}
+
+build.dependsOn shadowJar
