@@ -1,0 +1,6 @@
+name: Meteor Anarchy
+version: @version@
+main: minegame159.meteoranarchy.MeteorAnarchy
+api-version: 1.16
+authors: [MineGame159]
+description: Plugin for our anarchy server
