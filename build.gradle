@@ -27,6 +27,7 @@ dependencies {
     compileOnly 'com.destroystokyo.paper:paper-api:1.16.4-R0.1-SNAPSHOT'
 
     compile 'org.reflections:reflections:0.9.12'
+    compile 'it.unimi.dsi:fastutil:8.4.3'
 }
 
 processResources {
