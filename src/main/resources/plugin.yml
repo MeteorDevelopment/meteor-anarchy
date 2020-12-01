@@ -7,3 +7,5 @@ description: Plugin for our anarchy server
 
 depend:
   - PlaceholderAPI
+  - DeathMessagesPrime
+  - Votifier

@@ -18,7 +18,7 @@ public class Nicks {
     private static final Map<UUID, String> nicks = new HashMap<>();
     private static final Map<String, UUID> nicks2 = new HashMap<>();
 
-    public static void init() {
+    public static void load() {
         nicks.clear();
         nicks2.clear();
 

@@ -2,6 +2,7 @@ package minegame159.meteoranarchy;
 
 import minegame159.meteoranarchy.commands.Commands;
 import minegame159.meteoranarchy.listeners.Listeners;
+import minegame159.meteoranarchy.users.Users;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,7 +19,9 @@ public final class MeteorAnarchy extends JavaPlugin {
         Listeners.init();
         Perms.init();
         Commands.init();
-        Nicks.init();
+
+        Nicks.load();
+        Users.INSTANCE.load();
     }
 
     @Override
@@ -26,5 +29,6 @@ public final class MeteorAnarchy extends JavaPlugin {
         Bukkit.getScheduler().cancelTasks(this);
 
         Nicks.save();
+        Users.INSTANCE.save();
     }
 }
