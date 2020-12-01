@@ -93,9 +93,12 @@ public class Nicks {
         return true;
     }
 
-    public static void reset(Player player) {
-        String nick = nicks.remove(player.getUniqueId());
+    public static void reset(UUID uuid) {
+        String nick = nicks.remove(uuid);
         if (nick != null) nicks2.remove(nick);
+    }
+    public static void reset(Player player) {
+        reset(player.getUniqueId());
     }
 
     public static String get(Player player) {

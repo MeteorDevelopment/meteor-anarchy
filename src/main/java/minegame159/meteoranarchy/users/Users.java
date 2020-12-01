@@ -5,6 +5,7 @@ import net.querz.nbt.io.NBTUtil;
 import net.querz.nbt.tag.CompoundTag;
 import net.querz.nbt.tag.ListTag;
 import net.querz.nbt.tag.Tag;
+import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +30,20 @@ public class Users {
                 e.printStackTrace();
             }
         }
+
+        long delay = 60 * 60 * 1000;
+        Bukkit.getScheduler().runTaskTimer(MeteorAnarchy.INSTANCE, () -> {
+            long time = System.currentTimeMillis();
+
+            for (UUID uuid : users.keySet()) {
+                User user = users.get(uuid);
+
+                if (user.rankExpiresAt != 0 && user.rankExpiresAt <= time) {
+                    user.rankExpiresAt = 0;
+                    user.removeBenefits(uuid);
+                }
+            }
+        }, delay, delay);
     }
 
     public void save() {

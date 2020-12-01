@@ -56,6 +56,7 @@ public class HelpCommand extends MyCommand {
                 sb.append(ChatColor.GOLD).append(command.getName()).append(": ").append(ChatColor.WHITE).append(command.getDescription());
             }
         }
+        sb.append(ChatColor.GOLD).append("\ntrade").append(": ").append(ChatColor.WHITE).append("Lets you trade with other player.");
 
         ChatPaginator.ChatPage page = ChatPaginator.paginate(sb.toString(), pageNumber, pageWidth, pageHeight);
 

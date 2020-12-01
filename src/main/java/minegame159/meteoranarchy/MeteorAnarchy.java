@@ -22,6 +22,8 @@ public final class MeteorAnarchy extends JavaPlugin {
 
         Nicks.load();
         Users.INSTANCE.load();
+
+        Discord.start();
     }
 
     @Override
@@ -30,5 +32,7 @@ public final class MeteorAnarchy extends JavaPlugin {
 
         Nicks.save();
         Users.INSTANCE.save();
+
+        Discord.stop();
     }
 }

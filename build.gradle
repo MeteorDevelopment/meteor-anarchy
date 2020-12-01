@@ -13,6 +13,7 @@ targetCompatibility = '1.8'
 
 repositories {
     mavenCentral()
+    jcenter()
     maven {
         name = 'papermc-repo'
         url = 'https://papermc.io/repo/repository/maven-public/'
@@ -44,6 +45,10 @@ dependencies {
     compile 'org.reflections:reflections:0.9.12'
     compile 'it.unimi.dsi:fastutil:8.4.3'
     compile 'com.github.Querz:NBT:5.5'
+
+    compile ('net.dv8tion:JDA:4.2.0_222') {
+        exclude module: 'opus-java'
+    }
 }
 
 processResources {
