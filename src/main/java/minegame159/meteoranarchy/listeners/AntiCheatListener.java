@@ -23,6 +23,7 @@ public class AntiCheatListener implements Listener {
     private final Object2IntMap<Player> highYVelocityTicks = new Object2IntOpenHashMap<>();
     private final Object2IntMap<Player> highButLessYVelocityTicks = new Object2IntOpenHashMap<>();
     private final Object2ObjectMap<Player, Location> lastValidPhasePositions = new Object2ObjectOpenHashMap<>();
+    private final Object2BooleanMap<Player> lastWasInsideVehicle = new Object2BooleanOpenHashMap<>();
 
     @EventHandler
     private void onPlayerMove(PlayerMoveEvent event) {
@@ -38,7 +39,7 @@ public class AntiCheatListener implements Listener {
             if (velY > 2) y = Math.pow(velY, 2);
             double speed = Math.sqrt(Math.pow(to.getX() - from.getX(), 2) + y + Math.pow(to.getZ() - from.getZ(), 2));
 
-            if (velY > 0.5 ) {
+            if (velY > 0.5) {
                 int ticks = highYVelocityTicks.getInt(player);
                 highYVelocityTicks.put(player, ticks + 1);
             } else {
@@ -62,6 +63,7 @@ public class AntiCheatListener implements Listener {
                     event.setTo(pos);
                     to = pos;
                 }
+                if (player.isInsideVehicle()) player.leaveVehicle();
             } else {
                 lastValidSpeedPositions.put(player, event.getTo());
             }
@@ -86,6 +88,7 @@ public class AntiCheatListener implements Listener {
         highYVelocityTicks.removeInt(player);
         highButLessYVelocityTicks.removeInt(player);
         lastValidPhasePositions.remove(player);
+        lastWasInsideVehicle.removeBoolean(player);
     }
 
     @EventHandler
@@ -97,6 +100,10 @@ public class AntiCheatListener implements Listener {
     private void onServerTickEnd(ServerTickEndEvent event) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.isDead() || player.getGameMode() != GameMode.SURVIVAL) continue;
+
+            boolean isInsideVehicle = player.isInsideVehicle();
+            if (!lastWasInsideVehicle.getBoolean(player) && isInsideVehicle) ignoreTicks.put(player, 4);
+            lastWasInsideVehicle.put(player, isInsideVehicle);
 
             boolean onGround = isOnGround(player);
             if (onGround) {
