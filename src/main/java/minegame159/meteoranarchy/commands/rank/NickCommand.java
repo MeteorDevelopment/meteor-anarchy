@@ -19,8 +19,18 @@ public class NickCommand extends MyCommand {
         Player player = (Player) sender;
 
         if (args.length > 0) {
-            if (!Nicks.set(player, args[0])) {
-                player.sendMessage(MeteorAnarchy.PREFIX + "Someone is already using " + ChatColor.WHITE + ChatColor.translateAlternateColorCodes('&', args[0]));
+            String nick = args[0];
+            if (!player.hasPermission(Perms.ADMIN)) {
+                nick = nick.replace("&k", "");
+                nick = nick.replace("&l", "");
+                nick = nick.replace("&m", "");
+                nick = nick.replace("&n", "");
+                nick = nick.replace("&o", "");
+                nick = nick.replace("&i", "");
+            }
+
+            if (!Nicks.set(player, nick)) {
+                player.sendMessage(MeteorAnarchy.PREFIX + "Someone is already using " + ChatColor.WHITE + ChatColor.translateAlternateColorCodes('&', nick));
                 return true;
             }
         } else {

@@ -8,6 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.concurrent.TimeUnit;
+
 public class AddRankCommand extends MyCommand {
     public AddRankCommand() {
         super("addrank", "Extends player's rank.", "/addrank <name> <months>", Perms.RANK);
@@ -29,7 +31,7 @@ public class AddRankCommand extends MyCommand {
 
         User user = Users.INSTANCE.get(player.getUniqueId());
         user.addBenefits(player);
-        user.rankExpiresAt += months * 30 * 24 * 60 * 60 * 1000;
+        user.rankExpiresAt += TimeUnit.DAYS.toMillis(months * 30);
 
         return true;
     }
