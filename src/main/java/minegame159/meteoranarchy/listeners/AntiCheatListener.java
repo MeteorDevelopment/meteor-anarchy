@@ -52,8 +52,9 @@ public class AntiCheatListener implements Listener {
                 highButLessYVelocityTicks.removeInt(player);
             }
 
-            double maxSpeed = 0.85; // 16 BPS
-            if (player.isGliding()) maxSpeed *= 2 + 0.10625; // 34 BPS
+            double maxSpeed;
+            if (player.isGliding()) maxSpeed = getElytraSpeedLimit();
+            else maxSpeed = getNormalSpeedLimit();
 
             if (speed > maxSpeed) {
                 Location pos = lastValidSpeedPositions.get(player);
@@ -172,5 +173,15 @@ public class AntiCheatListener implements Listener {
         }
 
         return false;
+    }
+
+    private double getNormalSpeedLimit() {
+        if (Bukkit.getTPS()[0] < 18) return 0.65; // 12 BPS
+        return 0.85; // 16 BPS
+    }
+
+    private double getElytraSpeedLimit() {
+        if (Bukkit.getTPS()[0] < 18) return 0.85 * 1.62; // 26 BPS
+        return 0.85 * 2.2; // 36 BPS
     }
 }
