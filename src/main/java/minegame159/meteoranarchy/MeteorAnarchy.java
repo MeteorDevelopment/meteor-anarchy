@@ -7,6 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.concurrent.TimeUnit;
+
 public final class MeteorAnarchy extends JavaPlugin {
     public static MeteorAnarchy INSTANCE;
 
@@ -24,6 +26,12 @@ public final class MeteorAnarchy extends JavaPlugin {
         Users.INSTANCE.load();
 
         Discord.start();
+
+        long delay = 60 * 60 * 20;
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+            Bukkit.broadcastMessage(ChatColor.RED + ChatColor.BOLD.toString() + " -- " + ChatColor.RESET + ChatColor.GOLD + "Don't forget to /vote" + ChatColor.RED + ChatColor.BOLD.toString() + " --");
+            Bukkit.broadcastMessage(ChatColor.RED + ChatColor.BOLD.toString() + " -- " + ChatColor.RESET + ChatColor.GOLD + "To keep the server alive purchase a /rank" + ChatColor.RED + ChatColor.BOLD.toString() + " --");
+        }, delay, delay);
     }
 
     @Override

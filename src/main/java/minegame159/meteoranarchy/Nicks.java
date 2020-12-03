@@ -85,8 +85,11 @@ public class Nicks {
         if (nicks2.containsKey(nick)) return false;
 
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.getName().equals(nick)) return false;
+            if (p != player && p.getName().equals(nick)) return false;
         }
+
+        String prevNick = nicks.get(player.getUniqueId());
+        if (prevNick != null) nicks2.remove(prevNick);
 
         nicks.put(player.getUniqueId(), nick);
         nicks2.put(nick, player.getUniqueId());

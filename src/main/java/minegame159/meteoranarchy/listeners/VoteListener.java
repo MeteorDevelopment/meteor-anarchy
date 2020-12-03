@@ -22,7 +22,7 @@ public class VoteListener implements Listener {
             User user = Users.INSTANCE.get(player.getUniqueId());
             user.totalVotes++;
 
-            player.sendMessage(MeteorAnarchy.PREFIX + "Thanks for voting on " + ChatColor.WHITE + vote.getServiceName() + ChatColor.GRAY + "." + ChatColor.WHITE + user.totalVotes + ChatColor.GRAY + " votes");
+            player.sendMessage(MeteorAnarchy.PREFIX + "Thanks for voting on " + ChatColor.WHITE + vote.getServiceName() + ChatColor.GRAY + ". " + ChatColor.WHITE + user.totalVotes + ChatColor.GRAY + " votes");
         } else {
             Bukkit.getScheduler().runTaskAsynchronously(MeteorAnarchy.INSTANCE, () -> {
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(vote.getUsername());

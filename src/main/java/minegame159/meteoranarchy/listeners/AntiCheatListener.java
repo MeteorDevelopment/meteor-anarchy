@@ -19,10 +19,13 @@ public class AntiCheatListener implements Listener {
     private final Object2ObjectMap<Player, Location> lastValidSpeedPositions = new Object2ObjectOpenHashMap<>();
     private final Object2ObjectMap<Player, Location> lastOnGroundPositions = new Object2ObjectOpenHashMap<>();
     private final Object2IntMap<Player> inAirTicks = new Object2IntOpenHashMap<>();
+    private final Object2IntMap<Player> notFallingTicks = new Object2IntOpenHashMap<>();
     private final Object2DoubleMap<Player> lastVelocityY = new Object2DoubleOpenHashMap<>();
     private final Object2IntMap<Player> highYVelocityTicks = new Object2IntOpenHashMap<>();
     private final Object2IntMap<Player> highButLessYVelocityTicks = new Object2IntOpenHashMap<>();
-    private final Object2ObjectMap<Player, Location> lastValidPhasePositions = new Object2ObjectOpenHashMap<>();
+    private final Object2IntMap<Player> timesStoppedFalling = new Object2IntOpenHashMap<>();
+    private final Object2BooleanMap<Player> lastWasFalling = new Object2BooleanOpenHashMap<>();
+    //private final Object2ObjectMap<Player, Location> lastValidPhasePositions = new Object2ObjectOpenHashMap<>();
     private final Object2BooleanMap<Player> lastWasInsideVehicle = new Object2BooleanOpenHashMap<>();
 
     @EventHandler
@@ -39,14 +42,14 @@ public class AntiCheatListener implements Listener {
             if (velY > 2) y = Math.pow(velY, 2);
             double speed = Math.sqrt(Math.pow(to.getX() - from.getX(), 2) + y + Math.pow(to.getZ() - from.getZ(), 2));
 
-            if (velY > 0.5) {
+            if (velY > 0.6) {
                 int ticks = highYVelocityTicks.getInt(player);
                 highYVelocityTicks.put(player, ticks + 1);
             } else {
                 highYVelocityTicks.removeInt(player);
             }
 
-            if (velY > 0.2 && !player.isGliding()) {
+            if (velY > 0.3 && !player.isGliding()) {
                 int ticks = highButLessYVelocityTicks.getInt(player);
                 highButLessYVelocityTicks.put(player, ticks + 1);
             } else {
@@ -84,10 +87,13 @@ public class AntiCheatListener implements Listener {
         ignoreTicks.removeInt(player);
         lastOnGroundPositions.remove(player);
         inAirTicks.removeInt(player);
+        notFallingTicks.removeInt(player);
         lastVelocityY.removeDouble(player);
         highYVelocityTicks.removeInt(player);
         highButLessYVelocityTicks.removeInt(player);
-        lastValidPhasePositions.remove(player);
+        timesStoppedFalling.removeInt(player);
+        lastWasFalling.removeBoolean(player);
+        //lastValidPhasePositions.remove(player);
         lastWasInsideVehicle.removeBoolean(player);
     }
 
@@ -102,12 +108,13 @@ public class AntiCheatListener implements Listener {
             if (player.isDead() || player.getGameMode() != GameMode.SURVIVAL) continue;
 
             boolean isInsideVehicle = player.isInsideVehicle();
-            if (!lastWasInsideVehicle.getBoolean(player) && isInsideVehicle) ignoreTicks.put(player, 4);
+            if (!lastWasInsideVehicle.getBoolean(player) && isInsideVehicle) ignoreTicks.put(player, 6);
             lastWasInsideVehicle.put(player, isInsideVehicle);
 
             boolean onGround = isOnGround(player);
             if (onGround) {
                 lastOnGroundPositions.put(player, player.getLocation());
+                timesStoppedFalling.removeInt(player);
             }
 
             if (ignore(player) || player.isGliding()) continue;
@@ -115,6 +122,21 @@ public class AntiCheatListener implements Listener {
             double velY = lastVelocityY.getOrDefault(player, 0.0);
             int yVelTicks = highYVelocityTicks.getInt(player);
             int lessYVelTicks = highButLessYVelocityTicks.getInt(player);
+
+            if (lastWasFalling.getBoolean(player) && velY >= 0) {
+                int timesStoppedFalling = this.timesStoppedFalling.getInt(player) + 1;
+                this.timesStoppedFalling.put(player, timesStoppedFalling);
+            }
+
+            lastWasFalling.put(player, velY < 0);
+
+            /*int notFallingTicks = 0;
+            if (velY >= 0) {
+                notFallingTicks = this.notFallingTicks.getInt(player) + 1;
+                this.notFallingTicks.put(player, notFallingTicks);
+            } else {
+                this.notFallingTicks.removeInt(player);
+            }*/
 
             boolean inAir = !onGround && velY >= 0 && (velY <= 0.25 || yVelTicks > 4 || lessYVelTicks > 8);
             int ticksInAir = 0;
@@ -126,24 +148,24 @@ public class AntiCheatListener implements Listener {
                 inAirTicks.removeInt(player);
             }
 
-            if (ticksInAir >= 10) {
+            if ((ticksInAir >= 10)/* || (inAir && notFallingTicks >= 100)*/ || (inAir && timesStoppedFalling.getInt(player) > 1)) {
                 Location pos = lastOnGroundPositions.get(player);
                 if (pos != null) player.teleport(pos);
             }
 
             // Phase
-            if (isInBlock(player)) {
+            /*if (isInBlock(player)) {
                 Location pos = lastValidPhasePositions.get(player);
                 if (pos != null) player.teleport(pos);
             } else {
                 lastValidPhasePositions.put(player, player.getLocation());
-            }
+            }*/
         }
     }
 
-    private boolean isInBlock(Player player) {
+    /*private boolean isInBlock(Player player) {
         return player.getLocation().getBlock().getType().isOccluding();
-    }
+    }*/
 
     private boolean isOnGround(Player player) {
         Location pos = player.getLocation();

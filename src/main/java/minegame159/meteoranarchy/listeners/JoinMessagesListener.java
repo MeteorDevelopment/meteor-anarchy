@@ -10,11 +10,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class JoinMessagesListener implements Listener {
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
-        event.setJoinMessage(ChatColor.translateAlternateColorCodes('&', Nicks.get(event.getPlayer())) + ChatColor.GRAY + " joined");
+        event.setJoinMessage(ChatColor.GREEN + " + " + ChatColor.RESET + ChatColor.translateAlternateColorCodes('&', Nicks.get(event.getPlayer())) + ChatColor.GRAY + " joined");
     }
 
     @EventHandler
     private void onPlayerQuite(PlayerQuitEvent event) {
-        event.setQuitMessage(ChatColor.translateAlternateColorCodes('&', Nicks.get(event.getPlayer())) + ChatColor.GRAY + " left");
+        event.setQuitMessage(ChatColor.RED + " - " + ChatColor.RESET + ChatColor.translateAlternateColorCodes('&', Nicks.get(event.getPlayer())) + ChatColor.GRAY + " left");
     }
 }

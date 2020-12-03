@@ -77,6 +77,8 @@ public class User {
     }
 
     public void addDiscord(String id) {
+        if (hasDiscord && rankExpiresAt != 0) Discord.removeRankRole(discordId);
+
         hasDiscord = true;
         discordId = id;
 
