@@ -28,10 +28,25 @@ public class AntiCheatListener implements Listener {
     //private final Object2ObjectMap<Player, Location> lastValidPhasePositions = new Object2ObjectOpenHashMap<>();
     private final Object2BooleanMap<Player> lastWasInsideVehicle = new Object2BooleanOpenHashMap<>();
 
+    private final Object2ObjectMap<Player, int[]> lastSecondPerTickPlayerMoveTimes = new Object2ObjectOpenHashMap<>();
+    private int lastSecondTickI = 0;
+
     @EventHandler
     private void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+
+        int[] lastSecondTicks = lastSecondPerTickPlayerMoveTimes.get(player);
+        if (lastSecondTicks == null) {
+            lastSecondTicks = new int[20];
+            lastSecondPerTickPlayerMoveTimes.put(player, lastSecondTicks);
+        }
+        lastSecondTicks[lastSecondTickI] = lastSecondTicks[lastSecondTickI] + 1;
+
         if (event.isCancelled() || player.isDead() || player.getGameMode() != GameMode.SURVIVAL) return;
+
+        int totalMoveEventsLastSecond = 0;
+        for (int x : lastSecondTicks) totalMoveEventsLastSecond += x;
+        if (totalMoveEventsLastSecond > 25) event.setCancelled(true);
 
         Location from = event.getFrom();
         Location to = event.getTo();
@@ -95,6 +110,7 @@ public class AntiCheatListener implements Listener {
         lastWasFalling.removeBoolean(player);
         //lastValidPhasePositions.remove(player);
         lastWasInsideVehicle.removeBoolean(player);
+        lastSecondPerTickPlayerMoveTimes.remove(player);
     }
 
     @EventHandler
@@ -104,7 +120,13 @@ public class AntiCheatListener implements Listener {
 
     @EventHandler
     private void onServerTickEnd(ServerTickEndEvent event) {
+        lastSecondTickI++;
+        if (lastSecondTickI > 19) lastSecondTickI = 0;
+
         for (Player player : Bukkit.getOnlinePlayers()) {
+            int[] ticks = lastSecondPerTickPlayerMoveTimes.get(player);
+            if (ticks != null) ticks[lastSecondTickI] = 0;
+
             if (player.isDead() || player.getGameMode() != GameMode.SURVIVAL) continue;
 
             boolean isInsideVehicle = player.isInsideVehicle();
