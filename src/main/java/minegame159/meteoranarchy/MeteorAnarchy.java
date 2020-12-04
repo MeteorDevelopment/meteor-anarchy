@@ -23,6 +23,7 @@ public final class MeteorAnarchy extends JavaPlugin {
         Commands.init();
 
         Nicks.load();
+        Ignores.load();
         Users.INSTANCE.load();
 
         Discord.start();
@@ -39,6 +40,7 @@ public final class MeteorAnarchy extends JavaPlugin {
         Bukkit.getScheduler().cancelTasks(this);
 
         Nicks.save();
+        Ignores.save();
         Users.INSTANCE.save();
 
         Discord.stop();

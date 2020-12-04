@@ -94,7 +94,7 @@ public class AntiCheatListener implements Listener {
         lastVelocityY.put(player, to.getY() - from.getY());
     }
 
-    @EventHandler
+    /*@EventHandler
     private void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
@@ -111,7 +111,7 @@ public class AntiCheatListener implements Listener {
         //lastValidPhasePositions.remove(player);
         lastWasInsideVehicle.removeBoolean(player);
         lastSecondPerTickPlayerMoveTimes.remove(player);
-    }
+    }*/
 
     @EventHandler
     private void onPlayerVelocity(PlayerVelocityEvent event) {
