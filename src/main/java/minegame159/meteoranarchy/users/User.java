@@ -23,6 +23,7 @@ public class User {
     public UUID uuid;
 
     public int totalVotes;
+    public int offlineVotes;
 
     public long rankExpiresAt;
     public boolean hadRank;
@@ -91,6 +92,7 @@ public class User {
         tag.put("uuid", NBT.toTag(uuid));
 
         tag.putInt("totalVotes", totalVotes);
+        tag.putInt("offlineVotes", offlineVotes);
 
         tag.putLong("rankExpiresAt", rankExpiresAt);
         tag.putBoolean("hadRank", hadRank);
@@ -105,6 +107,7 @@ public class User {
         uuid = NBT.fromTag(tag.getLongArrayTag("uuid"));
 
         totalVotes = tag.getInt("totalVotes");
+        offlineVotes = tag.getInt("offlineVotes");
 
         rankExpiresAt = tag.getLong("rankExpiresAt");
         hadRank = tag.getBoolean("hadRank");
